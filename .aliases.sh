@@ -7,8 +7,6 @@ alias convert_video='ffmpeg -i'
 alias jarvis='ollama run llama3.2'
 alias ssh_security_status='sudo fail2ban-client status sshd'
 alias copyfromcat='xsel --clipboard --input'
-alias sshMyphone='ssh thiago@192.168.10 -p 65522'
-alias myhotspot='nmcli device wifi connect 0A:C7:DF:0A:19:2D password'
 alias showdns='cat /etc/resolv.conf'
 
 zipRepo() {
