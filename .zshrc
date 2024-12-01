@@ -93,6 +93,18 @@ if [ -f ~/.fa.sh ]; then
   . ~/.fa.sh
 fi
 
+# Garantir que dconf-editor esteja instalado
+if ! command -v dconf &> /dev/null; then
+    echo "dconf-editor não encontrado. Instalando..."
+    sudo apt update && sudo apt install -y dconf-editor
+fi
+
+# Configurar atalhos no Tilix
+dconf write /com/gexperts/Tilix/keybindings/switch-to-next-session "'<Control>Tab'"
+dconf write /com/gexperts/Tilix/keybindings/switch-to-previous-session "'<Control><Shift>Tab'"
+
+echo "Atalhos Ctrl+Tab e Ctrl+Shift+Tab no terminal configurados."
+
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
 
