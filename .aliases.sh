@@ -8,6 +8,7 @@ alias jarvis='ollama run llama3.2'
 alias ssh_security_status='sudo fail2ban-client status sshd'
 alias copyfromcat='xsel --clipboard --input'
 alias showdns='cat /etc/resolv.conf'
+alias genericPrompt='echo "Adapte o script para que, ... Forneça o código completo para que eu possa copiá-lo, colá-lo e testá-lo diretamente."'
 
 zipRepo() {
     local dir=$1;
