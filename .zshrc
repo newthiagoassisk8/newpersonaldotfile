@@ -211,3 +211,19 @@ tdlr() {
         fi
     fi
 }
+
+
+prettier_cli() {
+    # Define o diretório local do Prettier CLI
+    local LOCAL_PRETTIER_CLI_DIR=${PRETTIER_CLI_DIR:-./node_modules/prettier/bin}
+    
+    # Define o caminho completo para o executável do Prettier
+    local PRETTIER_EXEC=${PRETTIER_CLI_PATH:-${LOCAL_PRETTIER_CLI_DIR}/prettier.cjs}
+    
+    # Verifica se o executável do Prettier existe
+    if [[ -f "$PRETTIER_EXEC" ]]; then
+        "$PRETTIER_EXEC" "$@"
+    else
+        echo "Prettier CLI não encontrado em: $PRETTIER_EXEC" >&2
+    fi
+}
