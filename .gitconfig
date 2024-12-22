@@ -1,0 +1,12 @@
+[user]
+	email = assisthiago2303@gmail.com
+	name = newthiagoassisk8
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[alias]
+	newbranch = "!f() { git checkout -b \"$1\"; }; f"
+	push-current = !git push origin $(git rev-parse --abbrev-ref HEAD)
+	push-all = !git remote | xargs -I {} git push {}
