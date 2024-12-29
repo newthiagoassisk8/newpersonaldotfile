@@ -15,4 +15,21 @@ zipRepo() {
     zip -r -FS ./$(basename $dir)-$(date +"%Y.%m.%d.%H%M").zip $dir --exclude 'node_modules' --exclude 'storage/' --exclude 'vendor/'
 }
 
+add_host_entry() {
+    local ip="$1"
+    local hostname="$2"
+    
+    if [[ -z "$ip" || -z "$hostname" ]]; then
+        echo "Usage: add_host_entry <IP> <hostname>"
+        return 1
+    fi
+
+    # Backup do arquivo /etc/hosts
+    sudo cp /etc/hosts "/etc/hosts.bkp.$(date +%Y%m%d_%H%M%S)"
+
+    # Adiciona a entrada no /etc/hosts
+    echo -e "\n# $(date +'%Y-%m-%d %H:%M:%S')\n$ip $hostname" | sudo tee -a /etc/hosts
+
+    echo "Entry added: $ip $hostname"
+}
 
