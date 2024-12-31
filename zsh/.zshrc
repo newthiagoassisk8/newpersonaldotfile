@@ -152,8 +152,8 @@ echo -e "\033[1;34m=============================\033[0m"
 export PATH=$PATH:/usr/games
 
 
-if [ -f ~/.aliases.sh ]; then
-  . ~/.aliases.sh
+if [ -f ~/newpersonaldotfile/zsh/.aliases.sh ]; then
+  . ~/newpersonaldotfile/zsh/.aliases.sh
 fi
 
 
