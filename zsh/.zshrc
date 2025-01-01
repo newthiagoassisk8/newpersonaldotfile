@@ -179,7 +179,7 @@ source ~/.ia/bin/activate
 
 
 # Define o arquivo TODO
-TODO="$HOME/todo/todo.txt"
+TODO="$HOME/Mydocs/todo/todo.txt"
 
 # Lista ou adiciona tarefas
 tdl() {
