@@ -180,6 +180,7 @@ source ~/.ia/bin/activate
 
 # Define o arquivo TODO
 TODO="$HOME/MyDocs/todo/todo.txt"
+UTILS="$HOME/MyDocs/utils/utilsDaily.txt"
 
 # Lista ou adiciona tarefas
 tdl() {
@@ -208,6 +209,37 @@ tdlr() {
             # Remove a tarefa pelo índice
             sed -i "${1}d" "$TODO"
             echo "Tarefa removida."
+        fi
+    fi
+}
+
+# Lista ou adiciona links úteis
+utils() {
+    if [ $# -eq 0 ]; then
+        # Lista os links com índices
+        nl -w3 -s" - " "$UTILS" || echo "Nenhum link útil encontrado."
+    else
+        # Adiciona o link ao arquivo
+        echo "$*" >> "$UTILS"
+        echo "Link útil adicionado."
+    fi
+}
+
+# Remove o link pelo índice
+utilsr() {
+    if [ -z "$1" ]; then
+        echo "Erro: Nenhum índice especificado para remover."
+    elif ! [[ "$1" =~ ^[0-9]+$ ]]; then
+        echo "Erro: O índice deve ser um número inteiro."
+    else
+        # Verifica se o índice é válido
+        total_links=$(wc -l < "$UTILS")
+        if [ "$1" -gt "$total_links" ] || [ "$1" -lt 1 ]; then
+            echo "Erro: Índice inválido. Existem apenas $total_links links."
+        else
+            # Remove o link pelo índice
+            sed -i "${1}d" "$UTILS"
+            echo "Link útil removido."
         fi
     fi
 }
