@@ -9,7 +9,7 @@ alias ssh_security_status='sudo fail2ban-client status sshd'
 alias copyfromcat='xsel --clipboard --input'
 alias showdns='cat /etc/resolv.conf'
 alias genericPrompt='echo "Adapte o script para que, ... Forneça o código completo para que eu possa copiá-lo, colá-lo e testá-lo diretamente."'
-
+alias nano='micro'
 zipRepo() {
     local dir=$1;
     zip -r -FS ./$(basename $dir)-$(date +"%Y.%m.%d.%H%M").zip $dir --exclude 'node_modules' --exclude 'storage/' --exclude 'vendor/'
