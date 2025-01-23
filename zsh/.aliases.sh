@@ -33,3 +33,14 @@ add_host_entry() {
     echo "Entry added: $ip $hostname"
 }
 
+kill_service() {
+  local service_name="$1"
+  if [ -z "$service_name" ]; then
+    echo "Por favor, forneça o nome do serviço como parâmetro."
+    return 1
+  fi
+
+  for pid in $(ps aux | grep "$service_name" | grep -v grep | awk '{print $2}'); do
+    kill -9 "$pid" && echo "Processo $pid de $service_name encerrado com sucesso."
+  done
+}
