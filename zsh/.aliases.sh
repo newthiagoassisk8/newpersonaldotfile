@@ -44,3 +44,34 @@ kill_service() {
     kill -9 "$pid" && echo "Processo $pid de $service_name encerrado com sucesso."
   done
 }
+
+
+start_project() {
+    # Verifica se dois parâmetros foram fornecidos
+    if [ "$#" -ne 2 ]; then
+        echo "Uso: abrir_repositorios <diretório_repositorio_1> <diretório_repositorio_2>"
+        return 1
+    fi
+
+    # Diretórios dos repositórios fornecidos como parâmetros
+    local REPO1=$1
+    local REPO2=$2
+
+    # Cria uma nova janela do Tilix
+    tilix --action=app-new-window &
+
+    # Espera a janela ser criada
+    sleep 1
+
+    # Adiciona a primeira sessão e executa o comando 'npm start'
+    tilix --action=app-new-session -e "bash -c 'cd $REPO1 && yarn start; exec bash'" &
+
+    # Adiciona a segunda sessão e executa o comando 'watch.sh'
+    tilix --action=session-add-right -e "bash -c 'cd $REPO2 && ./watch.sh; exec bash'" &
+
+    # Adiciona a terceira sessão vazia
+    tilix --action=session-add-down -e "bash" &
+
+    # Aguarda o processo Tilix terminar
+    wait
+}
