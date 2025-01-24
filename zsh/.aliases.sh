@@ -58,7 +58,7 @@ start_project() {
     local REPO2=$2
 
     # Cria uma nova janela do Tilix
-    tilix --action=app-new-window &
+   # tilix --action=app-new-window &
 
     # Espera a janela ser criada
     sleep 1
