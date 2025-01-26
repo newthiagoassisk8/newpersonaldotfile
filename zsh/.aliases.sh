@@ -75,3 +75,77 @@ start_project() {
     # Aguarda o processo Tilix terminar
     wait
 }
+
+
+start_tilix_multi_servers() {
+    # Verifica se pelo menos dois argumentos foram fornecidos
+    if [ "$#" -lt 2 ] || [ "$#" -gt 4 ]; then
+        echo "Uso: start_project <diretorio_1>:<comando_1> [<diretorio_2>:<comando_2> ... até 4]"
+        return 1
+    fi
+
+    # Cria uma nova janela do Tilix (primeira sessão)
+    tilix --action=app-new-window &
+    sleep 2
+
+    # Captura o PID da janela do Tilix
+    tilix_pid=$(pgrep -o tilix)
+    if [ -z "$tilix_pid" ]; then
+        echo "Erro ao abrir o Tilix. Não foi possível encontrar o processo."
+        return 1
+    fi
+
+    # Contador de sessões
+    local session_counter=1
+
+    # Itera sobre os argumentos fornecidos
+    for param in "$@"; do
+        # Divide o parâmetro no formato "diretorio:comando"
+        IFS=':' read -r REPO CMD <<< "$param"
+
+        # Verifica se o diretório e o comando foram especificados
+        if [ -z "$REPO" ] || [ -z "$CMD" ]; then
+            echo "Erro: parâmetro inválido '$param'. Use o formato <diretorio>:<comando>."
+            continue
+        fi
+
+        # Atrasar a criação da sessão para garantir que a janela principal esteja pronta
+        sleep 1
+
+        # Adiciona a primeira sessão
+        if [ $session_counter -eq 1 ]; then
+            # Primeira sessão na janela
+            tilix --action=app-new-session -e "bash -c 'cd $REPO && $CMD; exec bash'" &
+        elif [ $session_counter -eq 2 ]; then
+            # Segunda sessão à direita da primeira
+            tilix --action=session-add-right -e "bash -c 'cd $REPO && $CMD; exec bash'" &
+        elif [ $session_counter -eq 3 ]; then
+            # Terceira sessão abaixo da primeira
+            tilix --action=session-add-down -e "bash -c 'cd $REPO && $CMD; exec bash'" &
+        elif [ $session_counter -eq 4 ]; then
+            # Quarta sessão abaixo da segunda
+            tilix --action=session-add-down -e "bash -c 'cd $REPO && $CMD; exec bash'" &
+        fi
+
+        # Incrementa o contador de sessões
+        session_counter=$((session_counter + 1))
+    done
+
+    # Aguarda o processo Tilix terminar
+    wait
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
