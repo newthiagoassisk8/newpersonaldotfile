@@ -10,6 +10,7 @@ alias copyfromcat='xsel --clipboard --input'
 alias showdns='cat /etc/resolv.conf'
 alias genericPrompt='echo "Adapte o script para que, ... Forneça o código completo para que eu possa copiá-lo, colá-lo e testá-lo diretamente."'
 alias nano='micro'
+alias man='tldr'
 zipRepo() {
     local dir=$1;
     zip -r -FS ./$(basename $dir)-$(date +"%Y.%m.%d.%H%M").zip $dir --exclude 'node_modules' --exclude 'storage/' --exclude 'vendor/'
@@ -137,6 +138,58 @@ start_tilix_multi_servers() {
 
 
 
+start_tmux_multi_sessions() {
+    # Verifica se pelo menos dois argumentos foram fornecidos
+    if [ "$#" -lt 2 ] || [ "$#" -gt 4 ]; then
+        echo "Uso: start_project <diretorio_1>:<comando_1> [<diretorio_2>:<comando_2> ... até 4]"
+        return 1
+    fi
+
+    # Cria uma nova sessão tmux
+    tmux new-session -d -s multi_sessions
+
+    # Contador de painéis
+    local panel_counter=1
+
+    # Itera sobre os argumentos fornecidos
+    for param in "$@"; do
+        # Divide o parâmetro no formato "diretorio:comando"
+        IFS=':' read -r REPO CMD <<< "$param"
+
+        # Verifica se o diretório e o comando foram especificados
+        if [ -z "$REPO" ] || [ -z "$CMD" ]; then
+            echo "Erro: parâmetro inválido '$param'. Use o formato <diretorio>:<comando>."
+            continue
+        fi
+
+        # Atrasar a criação do painel para garantir que a janela principal esteja pronta
+        sleep 1
+
+        # Adiciona os painéis de acordo com a ordem solicitada
+        if [ $panel_counter -eq 1 ]; then
+            # Primeira sessão no painel principal
+            tmux send-keys "cd $REPO && $CMD" C-m
+        elif [ $panel_counter -eq 2 ]; then
+            # Segunda sessão à direita da primeira
+            tmux split-window -h
+            tmux send-keys "cd $REPO && $CMD" C-m
+        elif [ $panel_counter -eq 3 ]; then
+            # Terceira sessão abaixo da primeira
+            tmux split-window -v
+            tmux send-keys "cd $REPO && $CMD" C-m
+        elif [ $panel_counter -eq 4 ]; then
+            # Quarta sessão abaixo da primeira, à esquerda da segunda
+            tmux split-window -v
+            tmux send-keys "cd $REPO && $CMD" C-m
+        fi
+
+        # Incrementa o contador de painéis
+        panel_counter=$((panel_counter + 1))
+    done
+
+    # Anexa à sessão tmux
+    tmux attach -t multi_sessions
+}
 
 
 
