@@ -11,6 +11,9 @@ alias showdns='cat /etc/resolv.conf'
 alias genericPrompt='echo "Adapte o script para que, ... Forneça o código completo para que eu possa copiá-lo, colá-lo e testá-lo diretamente."'
 alias nano='micro'
 alias man='tldr'
+alias find='fd'
+alias vegas='flatpak run org.kde.kdenlive'
+
 zipRepo() {
     local dir=$1;
     zip -r -FS ./$(basename $dir)-$(date +"%Y.%m.%d.%H%M").zip $dir --exclude 'node_modules' --exclude 'storage/' --exclude 'vendor/'
