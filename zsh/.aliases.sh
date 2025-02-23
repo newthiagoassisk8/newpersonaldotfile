@@ -13,6 +13,7 @@ alias nano='micro'
 alias man='tldr'
 alias find='fd'
 alias vegas='flatpak run org.kde.kdenlive'
+alias kdenlive='flatpak run org.kde.kdenlive'
 
 zipRepo() {
     local dir=$1;
