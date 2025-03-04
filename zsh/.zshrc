@@ -76,6 +76,12 @@ ZSH_THEME="robbyrussell"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+plugins=(
+    history-substring-search history
+    zsh-interactive-cd
+    zsh-navigation-tools
+)
+
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
@@ -85,6 +91,7 @@ ZSH_THEME="robbyrussell"
 plugins=(git history-substring-search history)
 
 source $ZSH/oh-my-zsh.sh
+bindkey -s '^[[1;7T' 'tilix\n'
 
 # User configuration
 
@@ -113,6 +120,21 @@ if ! command -v dconf &> /dev/null; then
     sudo apt update && sudo apt install -y dconf-editor
 fi
 
+# Verifica se o atalho Ctrl + Alt + T já está configurado para abrir o Tilix
+CURRENT_TILIX_BINDING=$(dconf read /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding)
+
+if [[ "$CURRENT_TILIX_BINDING" != "'<Control><Alt>t'" ]]; then
+    echo "Configurando atalho Ctrl+Alt+T para abrir Tilix..."
+    dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name "'Tilix'"
+    dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command "'tilix'"
+    dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding "'<Control><Alt>t'"
+
+    # Garante que os atalhos personalizados estão ativados
+    dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
+else
+    echo "Atalho Tilix já configurado."
+fi
+
 # Verificar e configurar atalhos no Tilix
 CURRENT_NEXT_SESSION=$(dconf read /com/gexperts/Tilix/keybindings/switch-to-next-session)
 if [[ "$CURRENT_NEXT_SESSION" != "'<Control>Tab'" ]]; then
@@ -121,6 +143,8 @@ if [[ "$CURRENT_NEXT_SESSION" != "'<Control>Tab'" ]]; then
 else
     echo "Atalho para Próxima Aba já configurado."
 fi
+
+
 
 CURRENT_PREV_SESSION=$(dconf read /com/gexperts/Tilix/keybindings/switch-to-previous-session)
 if [[ "$CURRENT_PREV_SESSION" != "'<Control><Shift>Tab'" ]]; then
