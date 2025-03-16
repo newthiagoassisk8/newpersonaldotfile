@@ -14,6 +14,7 @@ alias man='tldr'
 alias find='fd'
 alias vegas='flatpak run org.kde.kdenlive'
 alias kdenlive='flatpak run org.kde.kdenlive'
+alias remoteLink='ssh -L 5901:localhost:5901 -p 5632 -N -f vncuser@192.168.0.27'
 
 zipRepo() {
     local dir=$1;
@@ -196,6 +197,19 @@ start_tmux_multi_sessions() {
 }
 
 
+ffmpeg_convert_webm_to_mp4() {
+    if [ -z "$1" ]; then
+        echo "Uso: ffmpeg_convert <arquivo.webm>"
+        return 1
+    fi
+
+    input_file="$1"
+    output_file="${input_file%.webm}.mp4"
+
+    ffmpeg -i "$input_file" -c:v copy -c:a copy "$output_file"
+
+    echo "Conversão concluída: $output_file"
+}
 
 
 
