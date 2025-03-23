@@ -46,6 +46,11 @@ if [ -f ~/.encriptFunctions ]; then
   . ~/.encriptFunctions
 fi
 
+if [ -f ~/.adbScripts.sh ]; then
+  . ~/.adbScripts.sh
+fi
+
+
 # ========================
 # Virtual Environments & Tooling
 # ========================
