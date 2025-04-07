@@ -211,6 +211,39 @@ ffmpeg_convert_webm_to_mp4() {
     echo "Conversão concluída: $output_file"
 }
 
+convert_video_to_gif() {
+    # Verifica se o ffmpeg está instalado
+    if ! command -v ffmpeg &> /dev/null; then
+        echo "Erro: ffmpeg não está instalado. Instale com 'sudo apt install ffmpeg'"
+        return 1
+    fi
+
+    # Verifica se o vídeo foi fornecido como argumento
+    if [ -z "$1" ]; then
+        echo "Uso: convert_video_to_gif caminho/do/video"
+        return 1
+    fi
+
+    INPUT="$1"
+    BASENAME=$(basename "$INPUT")
+    FILENAME="${BASENAME%.*}"
+    OUTPUT="${FILENAME}.gif"
+
+    # Parâmetros ajustáveis
+    FPS=10
+    WIDTH=480
+
+    # Executa a conversão
+    ffmpeg -i "$INPUT" -vf "fps=$FPS,scale=$WIDTH:-1:flags=lanczos" -c:v gif "$OUTPUT"
+
+    # Verifica se o comando foi bem-sucedido
+    if [ $? -eq 0 ]; then
+        echo "GIF gerado com sucesso: $OUTPUT"
+    else
+        echo "Erro ao converter vídeo para GIF"
+        return 1
+    fi
+}
 
 
 
