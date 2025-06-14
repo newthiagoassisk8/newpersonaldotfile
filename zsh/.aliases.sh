@@ -328,7 +328,8 @@ ghpr() {
     --head "$USER:$HEAD_BRANCH" \
     --title "$TITLE" \
     --body "$BODY" \
-    --repo "$REPO"
+    --repo "$REPO" \
+    --draft
 }
 
 
