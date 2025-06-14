@@ -15,10 +15,36 @@ alias find='fd'
 alias vegas='flatpak run org.kde.kdenlive'
 alias kdenlive='flatpak run org.kde.kdenlive'
 alias remoteLink='ssh -L 5901:localhost:5901 -p 5632 -N -f vncuser@192.168.0.27'
-
+alias pacman='sudo apt update && sudo apt upgrade -y && flatpak update'
+alias bt-battery='python3 ~/bt-battery-indicator/main.py' 
 zipRepo() {
     local dir=$1;
     zip -r -FS ./$(basename $dir)-$(date +"%Y.%m.%d.%H%M").zip $dir --exclude 'node_modules' --exclude 'storage/' --exclude 'vendor/'
+}
+
+check_airpods_battery() {
+  local AIRPOD_ICON="🎧"
+
+  # Encontra o MAC address do primeiro dispositivo Bluetooth conectado com "AirPods" no nome
+  local MAC_ADDR=$(bluetoothctl devices | grep -i "AirPods" | awk '{print $2}')
+
+  if [[ -z "$MAC_ADDR" ]]; then
+    echo "$AIRPOD_ICON Nenhum dispositivo AirPods foi encontrado."
+    return 1
+  fi
+
+  local INFO=$(bluetoothctl info "$MAC_ADDR")
+
+  if echo "$INFO" | grep -q "Connected: yes"; then
+    local BATTERY=$(echo "$INFO" | grep "Battery Percentage" | awk -F': ' '{print $2}')
+    if [[ -n "$BATTERY" ]]; then
+      echo "$AIRPOD_ICON Bateria dos AirPods: $BATTERY"
+    else
+      echo "$AIRPOD_ICON Conectado, mas nível da bateria indisponível"
+    fi
+  else
+    echo "$AIRPOD_ICON AirPods encontrados, mas não estão conectados"
+  fi
 }
 
 add_host_entry() {
@@ -243,6 +269,66 @@ convert_video_to_gif() {
         echo "Erro ao converter vídeo para GIF"
         return 1
     fi
+}
+
+ghpr() {
+  local BASE="main"
+  local BODY="Criado via CLI"
+  local REPO=""
+  local HEAD_BRANCH
+  local TITLE
+  local USER
+
+  # Processamento de argumentos
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --base)
+        BASE="$2"
+        shift 2
+        ;;
+      --body)
+        BODY="$2"
+        shift 2
+        ;;
+      --repo)
+        REPO="$2"
+        shift 2
+        ;;
+      *)
+        shift
+        ;;
+    esac
+  done
+
+  # Branch atual
+  HEAD_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+  # Título default = nome da branch legível
+  TITLE="${HEAD_BRANCH//-/ }"
+
+  # Usuário para compor o --head
+  USER=$(git config --get user.name)
+
+  # Detecta o repositório atual caso não tenha passado --repo
+  if [[ -z "$REPO" ]]; then
+    REMOTE_URL=$(git remote get-url origin)
+    REPO=$(echo "$REMOTE_URL" | sed -E 's#(git@|https://)([^/:]+)[/:]([^/]+)/([^/]+)(\.git)?#\3/\4#')
+    REPO=$(echo "$REPO" | sed 's/\.git$//')
+  fi
+
+  echo "Criando PR:"
+  echo "  Base: $BASE"
+  echo "  Head: $USER:$HEAD_BRANCH"
+  echo "  Repo: $REPO"
+  echo "  Title: $TITLE"
+  echo "  Body: $BODY"
+
+  gh pr create \
+    --base "$BASE" \
+    --head "$USER:$HEAD_BRANCH" \
+    --title "$TITLE" \
+    --body "$BODY" \
+    --repo "$REPO"
 }
 
 
