@@ -332,6 +332,16 @@ ghpr() {
     --draft
 }
 
+git_checkout_fzf() {
+  local branch
+  branch=$(git branch --format='%(refname:short)' | fzf --prompt="Escolha a branch: ")
+
+  if [ -n "$branch" ]; then
+    git checkout "$branch"
+  else
+    echo "Nenhuma branch selecionada."
+  fi
+}
 
 
 
