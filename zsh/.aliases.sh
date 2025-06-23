@@ -343,6 +343,62 @@ git_checkout_fzf() {
   fi
 }
 
+glpr() {
+  local BASE="main"
+  local BODY="Criado via CLI"
+  local REPO=""
+  local HEAD_BRANCH
+  local TITLE
+
+  # Processamento de argumentos
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --base)
+        BASE="$2"
+        shift 2
+        ;;
+      --body)
+        BODY="$2"
+        shift 2
+        ;;
+      --repo)
+        REPO="$2"
+        shift 2
+        ;;
+      *)
+        shift
+        ;;
+    esac
+  done
+
+  # Branch atual
+  HEAD_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+  # Título default = nome da branch legível
+  TITLE="${HEAD_BRANCH//-/ }"
+
+  # Detecta o repositório atual caso não tenha passado --repo
+  if [[ -z "$REPO" ]]; then
+    REMOTE_URL=$(git remote get-url origin)
+    REPO=$(echo "$REMOTE_URL" | sed -E 's#(git@|https://)([^/:]+)[/:]([^/]+)/([^/]+)(\.git)?#\3/\4#')
+    REPO=$(echo "$REPO" | sed 's/\.git$//')
+  fi
+
+  echo "Criando Merge Request:"
+  echo "  Base (target): $BASE"
+  echo "  Head (source): $HEAD_BRANCH"
+  echo "  Repo: $REPO"
+  echo "  Title: $TITLE"
+  echo "  Body: $BODY"
+
+  glab mr create \
+    --source-branch "$HEAD_BRANCH" \
+    --target-branch "$BASE" \
+    --title "$TITLE" \
+    --description "$BODY" \
+    --repo "$REPO" \
+    --draft
+}
 
 
 
