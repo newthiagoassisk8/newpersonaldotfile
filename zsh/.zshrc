@@ -15,7 +15,9 @@ export PATH=$PATH:$HOME/Android/Sdk/emulator:$HOME/Android/Sdk/platform-tools
 export PATH=$PATH:~/android-studio/android-studio/bin
 export PATH="${PATH}:${HOME}/go/bin"
 export ANDROID_HOME=$HOME/Android/Sdk
-
+if [ -f ~/.gemini_api_key ]; then
+  . ~/.gemini_api_key
+fi
 # ========================
 # Oh My Zsh
 # ========================
