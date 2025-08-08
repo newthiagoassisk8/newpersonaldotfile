@@ -400,7 +400,8 @@ glpr() {
     --draft
 }
 
-
+alias tmp='cd /tmp'
+alias oldpwd='cd $OLDPWD'
 
 
 
