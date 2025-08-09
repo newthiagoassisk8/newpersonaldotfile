@@ -16,7 +16,7 @@ alias vegas='flatpak run org.kde.kdenlive'
 alias kdenlive='flatpak run org.kde.kdenlive'
 alias remoteLink='ssh -L 5901:localhost:5901 -p 5632 -N -f vncuser@192.168.0.27'
 alias pacman='sudo apt update && sudo apt upgrade -y && flatpak update'
-alias bt-battery='python3 ~/bt-battery-indicator/main.py' 
+alias bt-battery='python3 ~/bt-battery-indicator/main.py'
 zipRepo() {
     local dir=$1;
     zip -r -FS ./$(basename $dir)-$(date +"%Y.%m.%d.%H%M").zip $dir --exclude 'node_modules' --exclude 'storage/' --exclude 'vendor/'
@@ -50,7 +50,7 @@ check_airpods_battery() {
 add_host_entry() {
     local ip="$1"
     local hostname="$2"
-    
+
     if [[ -z "$ip" || -z "$hostname" ]]; then
         echo "Usage: add_host_entry <IP> <hostname>"
         return 1
@@ -400,9 +400,5 @@ glpr() {
     --draft
 }
 
-
-
-
-
-
-
+alias tmp='cd /tmp'
+alias oldpwd='cd $OLDPWD'
