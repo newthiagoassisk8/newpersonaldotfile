@@ -19,7 +19,7 @@ alias pacman='sudo apt update && sudo apt upgrade -y && flatpak update'
 alias bt-battery='python3 ~/bt-battery-indicator/main.py'
 alias obs_r='obs --startrecording --minimize-to-tray --profile "Padrão" --scene "Screen+Mic"
 '
-alias gsconnect-cli='/home/thiago/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js'
+alias gsconnect-cli="/home/$USER/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js"
 
 zipRepo() {
     local dir=$1;
