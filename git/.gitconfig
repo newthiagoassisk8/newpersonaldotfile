@@ -6,8 +6,7 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-[alias]
-	newbranch = "!f() { git checkout -b \"$1\"; }; f"
+[alias]	
 	push-current = !git push origin $(git rev-parse --abbrev-ref HEAD)
 	push-all = !git remote | xargs -I {} git push {}
 	amend = commit --amend -m

@@ -10,13 +10,17 @@ alias copyfromcat='xsel --clipboard --input'
 alias showdns='cat /etc/resolv.conf'
 alias genericPrompt='echo "Adapte o script para que, ... Forneça o código completo para que eu possa copiá-lo, colá-lo e testá-lo diretamente."'
 alias nano='micro'
-alias man='tldr'
-alias find='fd'
+# alias man='tldr'
+# alias find='fd'
 alias vegas='flatpak run org.kde.kdenlive'
 alias kdenlive='flatpak run org.kde.kdenlive'
 alias remoteLink='ssh -L 5901:localhost:5901 -p 5632 -N -f vncuser@192.168.0.27'
 alias pacman='sudo apt update && sudo apt upgrade -y && flatpak update'
-alias bt-battery='python3 ~/bt-battery-indicator/main.py' 
+alias bt-battery='python3 ~/bt-battery-indicator/main.py'
+alias obs_r='obs --startrecording --minimize-to-tray --profile "Padrão" --scene "Screen+Mic"
+'
+alias gsconnect-cli='/home/thiago/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js'
+
 zipRepo() {
     local dir=$1;
     zip -r -FS ./$(basename $dir)-$(date +"%Y.%m.%d.%H%M").zip $dir --exclude 'node_modules' --exclude 'storage/' --exclude 'vendor/'
@@ -50,7 +54,7 @@ check_airpods_battery() {
 add_host_entry() {
     local ip="$1"
     local hostname="$2"
-    
+
     if [[ -z "$ip" || -z "$hostname" ]]; then
         echo "Usage: add_host_entry <IP> <hostname>"
         return 1
@@ -403,7 +407,12 @@ glpr() {
 alias tmp='cd /tmp'
 alias oldpwd='cd $OLDPWD'
 
+ip_servidor_rede() {
+	nc 192.168.0.27 5632 -w 3
 
-
-
-
+	if [ $? -eq 0 ]; then
+		echo '192.168.0.27';
+	else
+		echo '100.99.181.118';
+	fi
+}
