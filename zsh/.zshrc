@@ -1,3 +1,4 @@
+
 # ========================
 # Powerlevel10k Instant Prompt
 # ========================
@@ -18,12 +19,16 @@ export ANDROID_HOME=$HOME/Android/Sdk
 if [ -f ~/.gemini_api_key ]; then
   . ~/.gemini_api_key
 fi
+if [ -f ~/.codex_api_key ]; then
+  . ~/.codex_api_key
+fi
 # ========================
 # Oh My Zsh
 # ========================
 export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="robbyrussell"
-plugins=(git history-substring-search history zsh-interactive-cd zsh-navigation-tools)
+ZSH_THEME="robbyrussell" # set by `omz`
+#plugins=(git history-substring-search history zsh-interactive-cd zsh-navigation-tools)
+
 source $ZSH/oh-my-zsh.sh
 
 # ========================
@@ -139,3 +144,21 @@ prettier_cli() {
 echo -e "\033[1;34m=============================\033[0m"
 echo -e "\033[1;33m  Welcome $(whoami)\033[0m"
 echo -e "\033[1;34m=============================\033[0m"
+
+# HSTR configuration - add this to ~/.zshrc
+alias hh=hstr                    # hh to be alias for hstr
+setopt histignorespace           # skip cmds w/ leading space from history
+export HSTR_CONFIG=hicolor       # get more colors
+bindkey -s "\C-r" "\C-a hstr -- \C-j"     # bind hstr to Ctrl-r (for Vi mode check doc)
+
+plugins=(
+    zsh-interactive-cd
+    git history-substring-search history
+    zsh-navigation-tools
+    npm node vscode laravel
+    docker docker-compose
+    debian composer
+    # starship
+)
+
+source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
