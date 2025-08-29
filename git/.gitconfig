@@ -11,3 +11,7 @@
 	push-all = !git remote | xargs -I {} git push {}
 	amend = commit --amend -m
 	branches-authors = !git for-each-ref --format \"%(refname:short) - %(authorname) - %(authordate:short)\" refs/remotes/
+[core]
+	editor = code -w
+[init]
+	defaultBranch = master

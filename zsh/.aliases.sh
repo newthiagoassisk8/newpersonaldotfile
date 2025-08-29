@@ -408,7 +408,7 @@ alias tmp='cd /tmp'
 alias oldpwd='cd $OLDPWD'
 
 ip_servidor_rede() {
-	nc 192.168.0.27 5632 -w 3
+	nc 192.168.0.27 5632 -z -w 3
 
 	if [ $? -eq 0 ]; then
 		echo '192.168.0.27';
