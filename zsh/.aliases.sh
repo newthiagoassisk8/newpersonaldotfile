@@ -20,6 +20,7 @@ alias bt-battery='python3 ~/bt-battery-indicator/main.py'
 alias obs_r='obs --startrecording --minimize-to-tray --profile "Padrão" --scene "Screen+Mic"
 '
 alias gsconnect-cli="/home/$USER/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js"
+alias lah="ls -lah"
 
 zipRepo() {
     local dir=$1;
@@ -407,12 +408,24 @@ glpr() {
 alias tmp='cd /tmp'
 alias oldpwd='cd $OLDPWD'
 
-ip_servidor_rede() {
+ip_servidor_rede () {
 	nc 192.168.0.27 5632 -z -w 3
+	if [ $? -eq 0 ]
+		then
+			echo '192.168.0.27'
+		else
+		    echo '100.99.181.118'
+		fi
+}
 
-	if [ $? -eq 0 ]; then
-		echo '192.168.0.27';
-	else
-		echo '100.99.181.118';
-	fi
+
+gerar_totp() {
+    local secret="$1"
+
+    if [[ -z "$secret" ]]; then
+        echo "Uso: gerar_totp <SECRET>"
+        return 1
+    fi
+
+    oathtool --base32 --totp "$secret" -d 6
 }
