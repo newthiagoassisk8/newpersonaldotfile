@@ -429,3 +429,29 @@ gerar_totp() {
 
     oathtool --base32 --totp "$secret" -d 6
 }
+
+git_remote_open () {
+
+    url=$(git remote get-url origin 2>/dev/null)
+
+
+    if [ -z "$url" ]; then
+        echo "Nenhum remote 'origin' encontrado neste repositório."
+        return 1
+    fi
+
+
+    if [[ "$url" =~ ^git@ ]]; then
+        # Substitui git@github.com:usuario/repo.git por https://github.com/usuario/repo
+        url=$(echo "$url" | sed -E 's#git@(.*):(.*)#https://\1/\2#')
+    fi
+
+
+    url=${url%.git}
+
+    echo "Abrindo: $url"
+
+
+    xdg-open "$url" >/dev/null 2>&1 &
+}
+
