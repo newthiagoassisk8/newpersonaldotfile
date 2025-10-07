@@ -455,3 +455,15 @@ git_remote_open () {
     xdg-open "$url" >/dev/null 2>&1 &
 }
 
+alias nano-bin='/usr/bin/nano'
+alias snano-bin='sudo /usr/bin/nano'
+alias nano='nano-bin -T 4 -l -e -A --positionlog --tabstospaces --trimblanks'
+alias snano='snano-bin -T 4 -l -e -A --positionlog --tabstospaces --trimblanks'
+
+studyTime() {
+    DIR="/home/$USER/Songs"
+    ARQUIVO="studyBG.mp3"
+
+    cd "$DIR" || { echo "Erro: não foi possível acessar $DIR"; return 1; }
+    mpg123 -q --loop -1 "$ARQUIVO"
+}
