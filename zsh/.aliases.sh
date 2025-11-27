@@ -1,7 +1,6 @@
 alias files=nautilus
 alias mylinux='lsb_release -a'
 alias count_amount='echo -e "\nTotal files: $(echo `ls -l | wc -l`-1 |bc)\n"'
-alias whoareu='ffplay -autoexit -nodisp /home/thiago/Música/.songs/JARVIS.mp3'
 alias show_hidden_files='ls -d .?*'
 alias convert_video='ffmpeg -i'
 alias jarvis='ollama run llama3.2'
@@ -9,7 +8,6 @@ alias ssh_security_status='sudo fail2ban-client status sshd'
 alias copyfromcat='xsel --clipboard --input'
 alias showdns='cat /etc/resolv.conf'
 alias genericPrompt='echo "Adapte o script para que, ... Forneça o código completo para que eu possa copiá-lo, colá-lo e testá-lo diretamente."'
-alias nano='micro'
 # alias man='tldr'
 # alias find='fd'
 alias vegas='flatpak run org.kde.kdenlive'
@@ -457,7 +455,7 @@ git_remote_open () {
 
 alias nano-bin='/usr/bin/nano'
 alias snano-bin='sudo /usr/bin/nano'
-alias nano='nano-bin -T 4 -l -e -A --positionlog --tabstospaces --trimblanks'
+# alias nano='nano-bin -T 4 -l -e -A --positionlog --tabstospaces --trimblanks'
 alias snano='snano-bin -T 4 -l -e -A --positionlog --tabstospaces --trimblanks'
 
 studyTime() {

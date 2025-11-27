@@ -158,7 +158,7 @@ plugins=(
     npm node vscode laravel
     docker docker-compose
     debian composer
-    # starship
+    starship
 )
 
 source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
