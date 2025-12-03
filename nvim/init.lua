@@ -158,6 +158,10 @@ vim.opt.scrolloff = 10
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+vim.keymap.set("n", "<A-1>", "1<C-w>w", { noremap = true })
+vim.keymap.set("n", "<A-2>", "2<C-w>w", { noremap = true })
+vim.keymap.set("n", "<A-3>", "3<C-w>w", { noremap = true })
+vim.keymap.set("n", "<A-4>", "4<C-w>w", { noremap = true })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`

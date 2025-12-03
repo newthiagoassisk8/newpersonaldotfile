@@ -1,17 +1,34 @@
 [user]
-	email = assisthiago2303@gmail.com
-	name = newthiagoassisk8
+    name = newthiagoassisk8
+    email = assisthiago2303@gmail.com
+
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
-[alias]	
-	push-current = !git push origin $(git rev-parse --abbrev-ref HEAD)
-	push-all = !git remote | xargs -I {} git push {}
-	amend = commit --amend -m
-	branches-authors = !git for-each-ref --format \"%(refname:short) - %(authorname) - %(authordate:short)\" refs/remotes/
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
 [core]
-	editor = code -w
+    editor = nvim
+
 [init]
-	defaultBranch = master
+    defaultBranch = master
+
+[alias]
+    # Push na branch atual
+    push-current = !git push origin $(git rev-parse --abbrev-ref HEAD)
+
+    # Push em todos remotes
+    push-all = !git remote | xargs -I {} git push {}
+
+    # Amend rápido
+    amend = commit --amend -m
+
+    # Diff no Tilix (nova sessão, nvimdiff e sessão não fecha)
+    diff-tilix = !tilix --action=app-new-session -e bash -c 'git difftool'
+[diff]
+    tool = nvimdiff
+
+[difftool "nvimdiff"]
+    cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
+

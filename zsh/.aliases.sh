@@ -15,15 +15,19 @@ alias kdenlive='flatpak run org.kde.kdenlive'
 alias remoteLink='ssh -L 5901:localhost:5901 -p 5632 -N -f vncuser@192.168.0.27'
 alias pacman='sudo apt update && sudo apt upgrade -y && flatpak update'
 alias bt-battery='python3 ~/bt-battery-indicator/main.py'
-alias obs_r='obs --startrecording --minimize-to-tray --profile "Padrão" --scene "Screen+Mic"
-'
+alias obs_r='obs --startrecording --minimize-to-tray --profile "Padrão" --scene "Screen+Mic"'
 alias gsconnect-cli="/home/$USER/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js"
 alias lah="ls -lah"
+
+
 
 zipRepo() {
     local dir=$1;
     zip -r -FS ./$(basename $dir)-$(date +"%Y.%m.%d.%H%M").zip $dir --exclude 'node_modules' --exclude 'storage/' --exclude 'vendor/'
 }
+
+
+
 
 check_airpods_battery() {
   local AIRPOD_ICON="🎧"
@@ -417,6 +421,7 @@ ip_servidor_rede () {
 }
 
 
+
 gerar_totp() {
     local secret="$1"
 
@@ -458,6 +463,7 @@ alias snano-bin='sudo /usr/bin/nano'
 # alias nano='nano-bin -T 4 -l -e -A --positionlog --tabstospaces --trimblanks'
 alias snano='snano-bin -T 4 -l -e -A --positionlog --tabstospaces --trimblanks'
 
+
 studyTime() {
     DIR="/home/$USER/Songs"
     ARQUIVO="studyBG.mp3"
@@ -465,3 +471,4 @@ studyTime() {
     cd "$DIR" || { echo "Erro: não foi possível acessar $DIR"; return 1; }
     mpg123 -q --loop -1 "$ARQUIVO"
 }
+
