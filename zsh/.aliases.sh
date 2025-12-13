@@ -435,27 +435,47 @@ gerar_totp() {
 
 git_remote_open () {
 
+    local commit=""
+    local url
+
+    # Parse das flags
+    while getopts ":c:" opt; do
+        case "$opt" in
+            c)
+                commit="$OPTARG"
+                ;;
+            \?)
+                echo "Flag inválida: -$OPTARG"
+                return 1
+                ;;
+            :)
+                echo "A flag -$OPTARG requer um argumento."
+                return 1
+                ;;
+        esac
+    done
+
     url=$(git remote get-url origin 2>/dev/null)
-
-
     if [ -z "$url" ]; then
         echo "Nenhum remote 'origin' encontrado neste repositório."
         return 1
     fi
 
-
+    # Converte SSH para HTTPS
     if [[ "$url" =~ ^git@ ]]; then
-        # Substitui git@github.com:usuario/repo.git por https://github.com/usuario/repo
         url=$(echo "$url" | sed -E 's#git@(.*):(.*)#https://\1/\2#')
     fi
 
-
+    # Remove .git do final
     url=${url%.git}
 
+    # Se commit foi informado, monta URL do commit
+    if [ -n "$commit" ]; then
+        url="$url/commit/$commit"
+    fi
+
     echo "Abrindo: $url"
-
-
-    xdg-open "$url" >/dev/null 2>&1 &
+    xdg-open "$url" > /dev/null 2>&1 &
 }
 
 alias nano-bin='/usr/bin/nano'
