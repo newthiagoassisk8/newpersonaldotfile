@@ -162,10 +162,13 @@ vim.keymap.set("n", "<A-1>", "1<C-w>w", { noremap = true })
 vim.keymap.set("n", "<A-2>", "2<C-w>w", { noremap = true })
 vim.keymap.set("n", "<A-3>", "3<C-w>w", { noremap = true })
 vim.keymap.set("n", "<A-4>", "4<C-w>w", { noremap = true })
-
+vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Mover linha para baixo" })
+vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Mover linha para cima" })
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+-- [[ Comment Keymaps ]]
+-- Usa o plugin Comment.nvim para comentar linha e bloco
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
@@ -331,6 +334,7 @@ require("lazy").setup({
 			pcall(require("telescope").load_extension, "ui-select")
 
 			local builtin = require("telescope.builtin")
+
 			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
 			vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
@@ -600,6 +604,21 @@ require("lazy").setup({
 				return "%2l:%-2v"
 			end
 		end,
+	},
+	{
+		"numToStr/Comment.nvim",
+		opts = {
+
+			ignore = "^$",
+			toggler = {
+				line = "<leader>cc",
+				block = "<leader>bc",
+			},
+			opleader = {
+				line = "<leader>c",
+				block = "<leader>b",
+			},
+		},
 	},
 
 	{ -- Treesitter
