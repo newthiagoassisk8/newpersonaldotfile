@@ -169,7 +169,6 @@ vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Mover linha para cima" })
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 -- [[ Comment Keymaps ]]
 -- Usa o plugin Comment.nvim para comentar linha e bloco
-
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
@@ -605,6 +604,18 @@ require("lazy").setup({
 			end
 		end,
 	},
+
+	{ -- presence.nvim (Discord Rich Presence for Neovim)
+		"andweeb/presence.nvim",
+		event = "VeryLazy",
+		config = function()
+			require("presence").setup({
+				-- your configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
+			})
+		end,
+	},
 	{
 		"numToStr/Comment.nvim",
 		opts = {
@@ -619,6 +630,10 @@ require("lazy").setup({
 				block = "<leader>b",
 			},
 		},
+	},
+	{
+		"IogaMaster/neocord",
+		event = "VeryLazy",
 	},
 
 	{ -- Treesitter
