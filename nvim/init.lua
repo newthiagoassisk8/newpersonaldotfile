@@ -583,12 +583,24 @@ require("lazy").setup({
 		end,
 	},
 
-	-- Highlight todo, notes, etc in comments
-	{
+	{ -- Highlight todo, notes, etc in comments
 		"folke/todo-comments.nvim",
 		event = "VimEnter",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = { signs = false },
+	},
+
+	{ -- Shows a list of diagnostics, references, etc.
+		"folke/trouble.nvim",
+		cmd = "Trouble",
+		opts = { use_diagnostic_signs = true },
+		keys = {
+			{
+				"<leader>xx",
+				"<cmd>Trouble diagnostics toggle<CR>",
+				desc = "Diagnostics (Trouble)",
+			},
+		},
 	},
 
 	{ -- Collection of various small independent plugins/modules
