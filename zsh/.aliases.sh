@@ -421,6 +421,50 @@ ip_servidor_rede () {
 }
 
 
+git_explore_commit() {
+    local commit="$1"
+    local subpath="${2:-.}"
+
+    if [[ -z "$commit" ]]; then
+        echo "Uso: git_view <COMMIT> [PASTA]"
+        return 1
+    fi
+
+    local repo_name short_hash target
+    repo_name="$(basename "$(git rev-parse --show-toplevel 2>/dev/null)")" || {
+        echo "Erro: não está dentro de um repositório Git."
+        return 1
+    }
+
+    short_hash="$(git rev-parse --short "$commit")"
+    target="/tmp/${repo_name}-view-${short_hash}"
+
+    if [[ ! -d "$target" ]]; then
+        echo "[git-view] Criando worktree: $target"
+        git worktree add --detach "$target" "$commit" >/dev/null 2>&1 || {
+            echo "Erro ao criar worktree para o commit '$commit'"
+            return 1
+        }
+    else
+        echo "[git-view] Worktree já existente: $target"
+    fi
+
+    cd "$target" || {
+        echo "Erro: não foi possível acessar $target"
+        return 1
+    }
+
+    if [[ -d "$subpath" || -f "$subpath" ]]; then
+        echo "[git-view] Abrindo no Neovim: $subpath"
+        nvim "$subpath"
+    else
+        echo "[git-view] Caminho '$subpath' não encontrado no commit. Abrindo raiz."
+        nvim .
+    fi
+
+    echo
+    echo "[git-view] Para remover depois: git worktree remove $target"
+}
 
 gerar_totp() {
     local secret="$1"
