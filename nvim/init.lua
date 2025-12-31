@@ -501,20 +501,42 @@ require("lazy").setup({
 				desc = "[F]ormat buffer",
 			},
 		},
-		opts = {
-			notify_on_error = false,
-			format_on_save = function(bufnr)
-				local disable_filetypes = { c = true, cpp = true }
-				local lsp_format_opt
-				if disable_filetypes[vim.bo[bufnr].filetype] then
-					lsp_format_opt = "never"
-				else
-					lsp_format_opt = "fallback"
-				end
-				return { timeout_ms = 500, lsp_format = lsp_format_opt }
-			end,
-			formatters_by_ft = { lua = { "stylua" } },
-		},
+		opts = function()
+			local util = require("conform.util")
+			return {
+				notify_on_error = false,
+				format_on_save = function(bufnr)
+					local disable_filetypes = { c = true, cpp = true }
+					local lsp_format_opt
+					if disable_filetypes[vim.bo[bufnr].filetype] then
+						lsp_format_opt = "never"
+					else
+						lsp_format_opt = "fallback"
+					end
+					return { timeout_ms = 500, lsp_format = lsp_format_opt }
+				end,
+				formatters_by_ft = {
+					lua = { "stylua" },
+					typescript = { "prettier" },
+				},
+				formatters = {
+					prettier = {
+						cwd = util.root_file({
+							".prettierrc",
+							".prettierrc.json",
+							".prettierrc.yml",
+							".prettierrc.yaml",
+							".prettierrc.js",
+							".prettierrc.cjs",
+							"prettier.config.js",
+							"prettier.config.cjs",
+							"package.json",
+							".git",
+						}),
+					},
+				},
+			}
+		end,
 	},
 
 	{ -- Autocompletion
@@ -626,6 +648,53 @@ require("lazy").setup({
 				-- or leave it empty to use the default settings
 				-- refer to the configuration section below
 			})
+		end,
+	},
+	{ -- HTTP client
+		"heilgar/nvim-http-client",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"hrsh7th/nvim-cmp", -- Optional but recommended for enhanced autocompletion
+			"nvim-telescope/telescope.nvim", -- Optional for better environment selection
+		},
+		event = "VeryLazy",
+		ft = { "http", "rest" },
+		config = function()
+			require("http_client").setup({
+				-- Default configuration (works out of the box)
+				default_env_file = ".env.json",
+				request_timeout = 30000,
+				split_direction = "right",
+				create_keybindings = true,
+				user_agent = "heilgar/nvim-http-client", -- Custom User-Agent header
+
+				-- Profiling (timing metrics for requests)
+				profiling = {
+					enabled = true,
+					show_in_response = true,
+					detailed_metrics = true,
+				},
+
+				-- Default keybindings (can be customized)
+				keybindings = {
+					select_env_file = "<leader>hf",
+					set_env = "<leader>he",
+					run_request = "<leader>hr",
+					stop_request = "<leader>hx",
+					toggle_verbose = "<leader>hv",
+					toggle_profiling = "<leader>hp",
+					dry_run = "<leader>hd",
+					copy_curl = "<leader>hc",
+					save_response = "<leader>hs",
+					set_project_root = "<leader>hg",
+					get_project_root = "<leader>hgg",
+				},
+			})
+
+			-- Set up Telescope integration if available
+			if pcall(require, "telescope") then
+				require("telescope").load_extension("http_client")
+			end
 		end,
 	},
 	{
