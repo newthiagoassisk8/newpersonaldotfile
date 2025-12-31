@@ -26,9 +26,4 @@
 
     # Diff no Tilix (nova sessão, nvimdiff e sessão não fecha)
     diff-tilix = !tilix --action=app-new-session -e bash -c 'git difftool'
-[diff]
-    tool = nvimdiff
-
-[difftool "nvimdiff"]
-    cmd = nvim -d \"$LOCAL\" \"$REMOTE\"
 
