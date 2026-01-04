@@ -27,3 +27,7 @@
     # Diff no Tilix (nova sessão, nvimdiff e sessão não fecha)
     diff-tilix = !tilix --action=app-new-session -e bash -c 'git difftool'
 
+[mergetool "vscode"]
+	cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
+[merge]
+	tool = vscode
