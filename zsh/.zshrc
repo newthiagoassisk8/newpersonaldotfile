@@ -22,6 +22,10 @@ fi
 if [ -f ~/.codex_api_key ]; then
   . ~/.codex_api_key
 fi
+
+if [ -f ~/.db_env ]; then
+  . ~/.db_env
+fi
 # ========================
 # Oh My Zsh
 # ========================
