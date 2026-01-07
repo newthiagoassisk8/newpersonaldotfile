@@ -528,6 +528,9 @@ alias snano-bin='sudo /usr/bin/nano'
 alias snano='snano-bin -T 4 -l -e -A --positionlog --tabstospaces --trimblanks'
 
 
+cat_copy() {
+	cat $1 | xclip -selection clip
+}
 studyTime() {
     DIR="/home/$USER/Songs"
     ARQUIVO="studyBG.mp3"
