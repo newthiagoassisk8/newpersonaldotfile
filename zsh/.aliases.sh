@@ -527,9 +527,14 @@ alias snano-bin='sudo /usr/bin/nano'
 # alias nano='nano-bin -T 4 -l -e -A --positionlog --tabstospaces --trimblanks'
 alias snano='snano-bin -T 4 -l -e -A --positionlog --tabstospaces --trimblanks'
 
+toclip() {
+    if [ -z "$1" ]; then
+        echo "Uso: toclip <arquivo>"
+        echo "Copia o conteúdo do arquivo para a área de transferência."
+        return 1
+    fi
 
-cat_copy() {
-	cat $1 | xclip -selection clip
+    cat "$1" | xclip -selection clipboard
 }
 studyTime() {
     DIR="/home/$USER/Songs"
