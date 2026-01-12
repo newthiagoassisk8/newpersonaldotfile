@@ -167,11 +167,25 @@ vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Mover linha para cima" })
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+vim.keymap.set("n", "<leader>e", "<cmd>CocCommand explorer<CR>", { desc = "Abrir Coc Explorer" })
+-- Coc LSP-like navigation and actions
+vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true, desc = "Coc: Goto Definition" })
+vim.keymap.set("n", "gv", function()
+	vim.fn.CocAction("jumpDefinition", "vsplit")
+end, { silent = true, desc = "Coc: Goto Definition (vsplit)" })
+vim.keymap.set("n", "gr", "<Plug>(coc-references)", { silent = true, desc = "Coc: Goto References" })
+vim.keymap.set("n", "gI", "<Plug>(coc-implementation)", { silent = true, desc = "Coc: Goto Implementation" })
+vim.keymap.set("n", "gD", "<Plug>(coc-declaration)", { silent = true, desc = "Coc: Goto Declaration" })
+vim.keymap.set("n", "gy", "<Plug>(coc-type-definition)", { silent = true, desc = "Coc: Type Definition" })
+vim.keymap.set("n", "<leader>D", "<Plug>(coc-type-definition)", { silent = true, desc = "Coc: Type Definition" })
+vim.keymap.set("n", "<leader>ds", "<cmd>CocList symbols<CR>", { silent = true, desc = "Coc: Document Symbols" })
+vim.keymap.set("n", "<leader>dd", "<cmd>CocList diagnostics<CR>", { silent = true, desc = "Coc: Diagnostics" })
+vim.keymap.set("n", "<leader>ws", "<cmd>CocList workspaceSymbols<CR>", { silent = true, desc = "Coc: Workspace Symbols" })
+vim.keymap.set("n", "<leader>rn", "<Plug>(coc-rename)", { silent = true, desc = "Coc: Rename" })
+vim.keymap.set("n", "<leader>ca", "<Plug>(coc-codeaction)", { silent = true, desc = "Coc: Code Action" })
+vim.keymap.set("x", "<leader>ca", "<Plug>(coc-codeaction-selected)", { silent = true, desc = "Coc: Code Action" })
 -- [[ Comment Keymaps ]]
 -- Usa o plugin Comment.nvim para comentar linha e bloco
--- Diagnostic keymaps
-vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
-
 vim.diagnostic.config({
 	virtual_text = true, -- mostra o erro ao lado da linha
 	signs = true, -- símbolos na coluna esquerda
@@ -372,7 +386,12 @@ require("lazy").setup({
 		},
 	},
 	{
+		"neoclide/coc.nvim",
+		branch = "release",
+	},
+	{
 		"neovim/nvim-lspconfig",
+		enabled = false, -- Coc is the primary LSP/diagnostics provider.
 		dependencies = {
 			{ "williamboman/mason.nvim", opts = {} },
 			"williamboman/mason-lspconfig.nvim",

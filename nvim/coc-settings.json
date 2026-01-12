@@ -1,0 +1,5 @@
+{
+  "explorer.file.showHiddenFiles": true,
+  "explorer.icon.enableNerdfont": true,
+  "explorer.file.column.source": ["icon", "diagnosticError", "diagnosticWarning", "filename"]
+}
