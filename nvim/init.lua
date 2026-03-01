@@ -167,23 +167,6 @@ vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Mover linha para cima" })
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
-vim.keymap.set("n", "<leader>e", "<cmd>CocCommand explorer<CR>", { desc = "Abrir Coc Explorer" })
--- Coc LSP-like navigation and actions
-vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true, desc = "Coc: Goto Definition" })
-vim.keymap.set("n", "gv", function()
-	vim.fn.CocAction("jumpDefinition", "vsplit")
-end, { silent = true, desc = "Coc: Goto Definition (vsplit)" })
-vim.keymap.set("n", "gr", "<Plug>(coc-references)", { silent = true, desc = "Coc: Goto References" })
-vim.keymap.set("n", "gI", "<Plug>(coc-implementation)", { silent = true, desc = "Coc: Goto Implementation" })
-vim.keymap.set("n", "gD", "<Plug>(coc-declaration)", { silent = true, desc = "Coc: Goto Declaration" })
-vim.keymap.set("n", "gy", "<Plug>(coc-type-definition)", { silent = true, desc = "Coc: Type Definition" })
-vim.keymap.set("n", "<leader>D", "<Plug>(coc-type-definition)", { silent = true, desc = "Coc: Type Definition" })
-vim.keymap.set("n", "<leader>ds", "<cmd>CocList symbols<CR>", { silent = true, desc = "Coc: Document Symbols" })
-vim.keymap.set("n", "<leader>dd", "<cmd>CocList diagnostics<CR>", { silent = true, desc = "Coc: Diagnostics" })
-vim.keymap.set("n", "<leader>ws", "<cmd>CocList workspaceSymbols<CR>", { silent = true, desc = "Coc: Workspace Symbols" })
-vim.keymap.set("n", "<leader>rn", "<Plug>(coc-rename)", { silent = true, desc = "Coc: Rename" })
-vim.keymap.set("n", "<leader>ca", "<Plug>(coc-codeaction)", { silent = true, desc = "Coc: Code Action" })
-vim.keymap.set("x", "<leader>ca", "<Plug>(coc-codeaction-selected)", { silent = true, desc = "Coc: Code Action" })
 -- [[ Comment Keymaps ]]
 -- Usa o plugin Comment.nvim para comentar linha e bloco
 vim.diagnostic.config({
@@ -374,6 +357,21 @@ require("lazy").setup({
 			end, { desc = "[S]earch [N]eovim files" })
 		end,
 	},
+	{
+		"nvim-tree/nvim-tree.lua",
+		keys = {
+			{ "<leader>e", "<cmd>NvimTreeToggle<CR>", desc = "Abrir Explorer" },
+		},
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		opts = {
+			view = {
+				width = 35,
+			},
+			renderer = {
+				group_empty = true,
+			},
+		},
+	},
 
 	-- LSP Plugins
 	{
@@ -386,12 +384,7 @@ require("lazy").setup({
 		},
 	},
 	{
-		"neoclide/coc.nvim",
-		branch = "release",
-	},
-	{
 		"neovim/nvim-lspconfig",
-		enabled = false, -- Coc is the primary LSP/diagnostics provider.
 		dependencies = {
 			{ "williamboman/mason.nvim", opts = {} },
 			"williamboman/mason-lspconfig.nvim",
@@ -413,8 +406,11 @@ require("lazy").setup({
 					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
 					map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
 					map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+					map("gy", require("telescope.builtin").lsp_type_definitions, "T[y]pe Definition")
 					map("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
 					map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
+					map("<leader>dd", require("telescope.builtin").diagnostics, "[D]ocument [D]iagnostics")
 					map(
 						"<leader>ws",
 						require("telescope.builtin").lsp_dynamic_workspace_symbols,
@@ -422,7 +418,6 @@ require("lazy").setup({
 					)
 					map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
 					map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
-					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
@@ -462,7 +457,8 @@ require("lazy").setup({
 				-- clangd = {},
 				-- gopls = {},
 				-- pyright = {},
-				ts_ls = {}, -- TypeScript/JavaScript
+				tsserver = {}, -- TypeScript/JavaScript
+				dartls = {}, -- Dart
 				-- rust_analyzer = {},
 
 				lua_ls = {
@@ -475,18 +471,12 @@ require("lazy").setup({
 				},
 			}
 
-			-- Ferramentas a instalar via Mason
-			local ensure_installed = vim.tbl_keys(servers or {})
-			vim.list_extend(ensure_installed, {
-				"stylua",
-				"typescript-language-server",
-				"typescript",
-			})
-
 			require("mason-tool-installer").setup({
 				ensure_installed = {
-					"typescript-language-server", -- ✅ correto (LSP oficial)
-					-- extras opcionais:
+					"typescript-language-server",
+					"lua-language-server",
+					"dart-debug-adapter",
+					"stylua",
 					"prettier",
 					"eslint_d",
 				},
@@ -494,7 +484,7 @@ require("lazy").setup({
 				run_on_start = true,
 			})
 			require("mason-lspconfig").setup({
-				ensure_installed = { "ts_ls" },
+				ensure_installed = { "tsserver", "lua_ls" },
 				handlers = {
 					function(server_name)
 						local server = servers[server_name] or {}
@@ -503,6 +493,11 @@ require("lazy").setup({
 					end,
 				},
 			})
+
+			-- dartls is provided by the Dart SDK, not by Mason.
+			local dartls = servers.dartls or {}
+			dartls.capabilities = vim.tbl_deep_extend("force", {}, capabilities, dartls.capabilities or {})
+			require("lspconfig").dartls.setup(dartls)
 		end,
 	},
 
@@ -537,6 +532,7 @@ require("lazy").setup({
 				formatters_by_ft = {
 					lua = { "stylua" },
 					typescript = { "prettier" },
+					dart = { "dart_format" },
 				},
 				formatters = {
 					prettier = {
@@ -757,6 +753,7 @@ require("lazy").setup({
 				"typescript",
 				"tsx",
 				"json",
+				"dart",
 			},
 			auto_install = true,
 			highlight = { enable = true, additional_vim_regex_highlighting = { "ruby" } },
