@@ -162,6 +162,7 @@ vim.keymap.set("n", "<A-1>", "1<C-w>w", { noremap = true })
 vim.keymap.set("n", "<A-2>", "2<C-w>w", { noremap = true })
 vim.keymap.set("n", "<A-3>", "3<C-w>w", { noremap = true })
 vim.keymap.set("n", "<A-4>", "4<C-w>w", { noremap = true })
+vim.keymap.set({ "n", "v" }, "<leader>y", '"+y', { desc = "Copy to system clipboard" })
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Mover linha para baixo" })
 vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Mover linha para cima" })
 -- Clear highlights on search when pressing <Esc> in normal mode
