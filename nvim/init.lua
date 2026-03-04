@@ -489,7 +489,8 @@ require("lazy").setup({
 					function(server_name)
 						local server = servers[server_name] or {}
 						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-						require("lspconfig")[server_name].setup(server)
+						vim.lsp.config(server_name, server)
+						vim.lsp.enable(server_name)
 					end,
 				},
 			})
@@ -497,7 +498,8 @@ require("lazy").setup({
 			-- dartls is provided by the Dart SDK, not by Mason.
 			local dartls = servers.dartls or {}
 			dartls.capabilities = vim.tbl_deep_extend("force", {}, capabilities, dartls.capabilities or {})
-			require("lspconfig").dartls.setup(dartls)
+			vim.lsp.config("dartls", dartls)
+			vim.lsp.enable("dartls")
 		end,
 	},
 
