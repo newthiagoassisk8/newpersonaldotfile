@@ -18,6 +18,7 @@ alias bt-battery='python3 ~/bt-battery-indicator/main.py'
 alias obs_r='obs --startrecording --minimize-to-tray --profile "Padrão" --scene "Screen+Mic"'
 alias gsconnect-cli="/home/$USER/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js"
 alias lah="ls -lah"
+alias studyspace="cd ~/studySpace/"
 
 
 
