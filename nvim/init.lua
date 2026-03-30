@@ -656,8 +656,7 @@ require("lazy").setup({
 			end
 		end,
 	},
-
-	{ -- presence.nvim (Discord Rich Presence for Neovim)
+		{ -- presence.nvim (Discord Rich Presence for Neovim)
 		"andweeb/presence.nvim",
 		event = "VeryLazy",
 		config = function()
@@ -763,6 +762,8 @@ require("lazy").setup({
 			indent = { enable = true, disable = { "ruby" } },
 		},
 	},
+
+	{ import = "custom.plugins" },
 
 	-- More example plugins are available in the Kickstart repo
 }, {
