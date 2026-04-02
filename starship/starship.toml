@@ -1,0 +1,22 @@
+# Avoid timeout warnings from slower language shims (asdf, pyenv, etc.).
+command_timeout = 2000
+
+[time]
+disabled = false
+format = "[$time]($style) "
+time_format = "%T"
+style = "bold yellow"
+
+[cmd_duration]
+min_time = 0
+format = "[$duration]($style) "
+style = "bold green"
+show_milliseconds = true
+
+[php]
+format = "php [$version]($style) "
+style = "bold blue"
+
+[nodejs]
+format = "node [$version]($style) "
+style = "bold green"
