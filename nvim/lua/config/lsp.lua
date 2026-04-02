@@ -1,7 +1,8 @@
 local M = {}
 
 M.server_settings = {
-  ts_ls = {},
+  vtsls = {},
+  vue_ls = {},
   eslint = {},
   tailwindcss = {},
   lua_ls = {
@@ -13,7 +14,7 @@ M.server_settings = {
   },
 }
 
-M.lsp_ensure_installed = { "ts_ls", "eslint", "tailwindcss", "lua_ls" }
+M.lsp_ensure_installed = { "vtsls", "vue_ls", "eslint", "tailwindcss", "lua_ls" }
 
 M.tool_ensure_installed = {
   "typescript-language-server",

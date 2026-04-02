@@ -403,9 +403,12 @@ require("lazy").setup({
 						vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 					end
 					map("gv", function()
-						require("telescope.builtin").lsp_definitions({ jump_type = "vsplit" })
-					end, "[G]oto Definition (vertical split via Telescope)")
-					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+						vim.cmd.vsplit()
+						vim.lsp.buf.definition()
+					end, "[G]oto Definition (vertical split)")
+					map("gd", function()
+						vim.lsp.buf.definition({ reuse_win = true })
+					end, "[G]oto [D]efinition")
 					map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
 					map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
 					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
@@ -455,11 +458,48 @@ require("lazy").setup({
 			local capabilities = vim.lsp.protocol.make_client_capabilities()
 			capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
+			local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+			local vue_language_server_path =
+				vim.fn.stdpath("data") .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+			local vue_typescript_plugin_path =
+				vim.fn.stdpath("data") .. "/mason/packages/vue-language-server/node_modules/@vue/typescript-plugin"
+			local has_vtsls = vim.uv.fs_stat(mason_bin .. "/vtsls") ~= nil or vim.fn.executable("vtsls") == 1
+			local ts_server_name = has_vtsls and "vtsls" or "ts_ls"
+			local vue_plugin_for_vtsls = {
+				name = "@vue/typescript-plugin",
+				location = vue_language_server_path,
+				languages = { "vue" },
+				configNamespace = "typescript",
+			}
+			local vue_plugin_for_ts_ls = {
+				name = "@vue/typescript-plugin",
+				location = vue_typescript_plugin_path,
+				languages = { "javascript", "typescript", "vue" },
+			}
+			local ts_server = has_vtsls and {
+				cmd = { mason_bin .. "/vtsls", "--stdio" },
+				settings = {
+					vtsls = {
+						tsserver = {
+							globalPlugins = { vue_plugin_for_vtsls },
+						},
+					},
+				},
+				filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+			} or {
+				cmd = { mason_bin .. "/typescript-language-server", "--stdio" },
+				init_options = {
+					plugins = { vue_plugin_for_ts_ls },
+				},
+				filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+			}
+
 			local servers = {
 				-- clangd = {},
 				-- gopls = {},
 				-- pyright = {},
-				tsserver = {}, -- TypeScript/JavaScript
+				[ts_server_name] = ts_server,
+				vue_ls = { cmd = { mason_bin .. "/vue-language-server", "--stdio" } },
 				dartls = {}, -- Dart
 				-- rust_analyzer = {},
 
@@ -486,22 +526,17 @@ require("lazy").setup({
 				run_on_start = true,
 			})
 			require("mason-lspconfig").setup({
-				ensure_installed = { "tsserver", "lua_ls" },
-				handlers = {
-					function(server_name)
-						local server = servers[server_name] or {}
-						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-						vim.lsp.config(server_name, server)
-						vim.lsp.enable(server_name)
-					end,
-				},
+				automatic_enable = false,
+				ensure_installed = { ts_server_name, "vue_ls", "lua_ls" },
 			})
 
-			-- dartls is provided by the Dart SDK, not by Mason.
-			local dartls = servers.dartls or {}
-			dartls.capabilities = vim.tbl_deep_extend("force", {}, capabilities, dartls.capabilities or {})
-			vim.lsp.config("dartls", dartls)
-			vim.lsp.enable("dartls")
+			for server_name, server in pairs(servers) do
+				server = vim.tbl_deep_extend("force", {}, server, {
+					capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {}),
+				})
+				vim.lsp.config(server_name, server)
+				vim.lsp.enable(server_name)
+			end
 		end,
 	},
 
