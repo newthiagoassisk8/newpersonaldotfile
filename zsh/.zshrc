@@ -166,3 +166,5 @@ plugins=(
 )
 
 source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+export STARSHIP_CONFIG="$HOME/newpersonaldotfile/starship/starship.toml"
+eval "$(starship init zsh)"

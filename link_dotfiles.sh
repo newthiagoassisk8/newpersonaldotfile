@@ -47,6 +47,7 @@ link_item() {
 
 declare -A FILE_MAP=(
   ["git/.gitconfig"]="$HOME_DIR/.gitconfig"
+  ["starship/starship.toml"]="$HOME_DIR/.config/starship.toml"
   ["tmux/.tmux.conf"]="$HOME_DIR/.tmux.conf"
   ["zsh/.zshrc"]="$HOME_DIR/.zshrc"
   ["zsh/.aliases.sh"]="$HOME_DIR/.aliases.sh"
