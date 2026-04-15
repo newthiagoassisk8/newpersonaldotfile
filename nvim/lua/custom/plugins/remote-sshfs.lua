@@ -53,14 +53,76 @@ return {
 			pcall(require("telescope").load_extension, "remote-sshfs")
 
 			local api = require("remote-sshfs.api")
+			local connections = require("remote-sshfs.connections")
 			local host_alias = "qw-server"
+			local ssh_config_paths = opts.connections.ssh_configs or {}
+			local function has_sshfs()
+				return vim.fn.executable("sshfs") == 1
+			end
+
+			local function notify_missing_sshfs()
+				vim.notify(
+					"[remote-sshfs] 'sshfs' nao encontrado no PATH. Instale o pacote 'sshfs' para usar este comando.",
+					vim.log.levels.ERROR
+				)
+			end
+
+			local function load_host_overrides(alias)
+				for _, config_path in ipairs(ssh_config_paths) do
+					local expanded_path = vim.fn.expand(config_path)
+					if vim.fn.filereadable(expanded_path) == 1 then
+						local in_target_host = false
+						local overrides = {}
+
+						for line in io.lines(expanded_path) do
+							local host_names = line:match("^%s*Host%s+(.+)$")
+							if host_names then
+								in_target_host = false
+								for host_name in host_names:gmatch("%S+") do
+									if host_name == alias then
+										in_target_host = true
+										break
+									end
+								end
+							elseif in_target_host then
+								local key, value = line:match("^%s*(%S+)%s+(.+)$")
+								if key and value then
+									overrides[key] = value
+								end
+							end
+						end
+
+						if not vim.tbl_isempty(overrides) then
+							return overrides
+						end
+					end
+				end
+
+				return {}
+			end
 
 			local function connect_qw(path)
-				local target = host_alias
-				if path and path ~= "" then
-					target = ("%s:%s"):format(host_alias, path)
+				if not has_sshfs() then
+					notify_missing_sshfs()
+					return
 				end
-				vim.cmd(("RemoteSSHFSConnect %s"):format(target))
+
+				local host = vim.deepcopy(connections.list_hosts()[host_alias] or {})
+				if vim.tbl_isempty(host) then
+					vim.notify(
+						("[remote-sshfs] host '%s' nao encontrado no ~/.ssh/config."):format(host_alias),
+						vim.log.levels.ERROR
+					)
+					return
+				end
+
+				host = vim.tbl_extend("force", host, load_host_overrides(host_alias))
+
+				if path and path ~= "" then
+					host.Path = path
+				end
+
+				connections.connect(host)
 			end
 
 			vim.api.nvim_create_user_command("QWConnect", function()
@@ -83,8 +145,21 @@ return {
 				desc = "Desmonta a conexao SSHFS atual",
 			})
 
+			local function prompt_qw_open()
+				vim.ui.input({
+					prompt = "Remote path for qw-server: ",
+					completion = "dir",
+				}, function(input)
+					if input == nil then
+						return
+					end
+
+					vim.cmd.QWOpen(input)
+				end)
+			end
+
 			vim.keymap.set("n", "<leader>Rc", "<cmd>QWConnect<CR>", { desc = "[R]emote connect qw-server" })
-			vim.keymap.set("n", "<leader>Ro", "<cmd>QWOpen<Space>", { desc = "[R]emote open path on qw-server" })
+			vim.keymap.set("n", "<leader>Ro", prompt_qw_open, { desc = "[R]emote open path on qw-server" })
 			vim.keymap.set("n", "<leader>Rf", api.find_files, { desc = "[R]emote find files" })
 			vim.keymap.set("n", "<leader>Rg", api.live_grep, { desc = "[R]emote live grep" })
 			vim.keymap.set("n", "<leader>Rd", api.disconnect, { desc = "[R]emote disconnect" })
